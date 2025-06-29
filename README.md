@@ -2,8 +2,7 @@
 
 Truffle is a job search and monitoring application that scrapes job boards from top VC companies in North America.
 
-<img width="1624" alt="image" src="https://github.com/user-attachments/assets/8426f024-4b17-4037-ae0f-a1f2e7810668" />
-
+<img width="1616" alt="image" src="https://github.com/user-attachments/assets/dc82ba57-4cef-4d0b-a078-01f3c3deeaaf" />
 
 ## Current Functionality
 
