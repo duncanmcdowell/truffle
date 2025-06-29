@@ -18,7 +18,7 @@ export function FindJobsClient({ initialJobs }: { initialJobs: Job[] }) {
     <>
       <div className="mb-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Truffle <span className="text-4xl transform scale-x-[-1] inline-block">🐖</span></h1>
+          <h1 className="text-3xl font-bold">Truffle <span className="text-4xl">🐖</span></h1>
           <div className="flex gap-4">
             <SearchTermsCommandDialog />
             <FindJobsDialog onJobsFetched={setJobs} />

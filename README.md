@@ -16,6 +16,19 @@ The application provides:
 - **Real-time Notifications**: Toast notifications for job search progress and completion
 - **Data Persistence**: SQLite database for storing jobs, search terms, and search settings
 
+## Punchlist
+
+### Recently Completed ✅
+- [x] Wire scheduler logic to cron
+- [x] Provide sonnet updates
+
+### Future Improvements 📋
+- [ ] Add 20-30 more VC
+- [ ] Implement email notifications for new job alerts
+- [ ] Mobile? 
+- [ ] Add ability to ignore specific jobs using checkbox column
+- [ ] Other useful columns?
+
 ## Technical Stack
 
 - **Frontend**: Next.js 14+ with React 19, TypeScript, and Tailwind CSS
