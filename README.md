@@ -6,12 +6,11 @@ Truffle is a job search and monitoring application that scrapes job boards from 
 
 The application provides:
 
-- **Web Interface**: A modern Next.js 14+ frontend with a data table displaying scraped jobs, search functionality, and filtering options
+- **Web Interface**: Next.js 14+ frontend with a data table displaying scraped jobs, search functionality, and filtering options
 - **Real-time Job Scraping**: Manual and automated scraping of job boards from 15+ major VC firms including Sequoia, a16z, Accel, Bessemer, and others
 - **Search Term Management**: Ability to add, remove, and manage search terms that are used to filter job listings
 - **Seniority Filtering**: Configurable filters for job seniority levels (CXO, VP, Director, Senior, etc.)
 - **Scheduled Automation**: Optional hourly automated job scraping with real-time progress tracking
-- **Duplicate Detection**: SQLite database prevents duplicate job entries across scraping sessions
 - **Real-time Notifications**: Toast notifications for job search progress and completion
 - **Data Persistence**: SQLite database for storing jobs, search terms, and search settings
 
@@ -19,11 +18,54 @@ The application provides:
 
 - **Frontend**: Next.js 14+ with React 19, TypeScript, and Tailwind CSS
 - **Database**: SQLite with better-sqlite3
-- **UI Components**: Radix UI primitives with custom styling
+- **UI Components**: Shad/cn
 - **Data Validation**: Zod for type safety and validation
 - **Scheduling**: node-cron for automated hourly job searches
 - **Email**: Resend integration (configured but not actively used for alerts)
 - **Real-time Updates**: Server-Sent Events (SSE) for progress tracking
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+### Running the Application
+
+#### Development Mode
+```bash
+npm run dev
+```
+The application will be available at `http://localhost:3000`
+
+**⚠️ Important Note**: When running in development mode, the automated scheduler may create duplicate tasks if you restart the development server frequently. This is because the scheduler initializes on each server restart. For testing the scheduler functionality, it's recommended to use the production build locally.
+
+#### Production Build (Recommended for Scheduler Testing)
+```bash
+npm run build
+npm start
+```
+
+This runs the production build locally, which is more stable for testing and using the automated scheduling features.
+
+### Database
+
+The application uses SQLite for data storage. The database file (`jobs.db`) will be created automatically when you first run the application, and several default search terms will be populated.
+
+### Features
+
+- **Manual Job Search**: Use the "Find Jobs" button to manually trigger a job search across all enabled VC firms
+- **Search Terms**: Add and manage search terms using the "Edit Search Terms" button (⌘+J)
+- **Scheduled Search**: Enable automated hourly job searches through the settings in the Find Jobs dialog (⌘+K)
+- **Seniority Filters**: Configure which job seniority levels to include in searches
 
 ## Job Board Platforms Supported
 
