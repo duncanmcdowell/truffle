@@ -28,6 +28,7 @@ The application provides:
 - [ ] Mobile? 
 - [ ] Add ability to ignore specific jobs using checkbox column
 - [ ] Other useful columns?
+- [ ] Host it?
 
 ## Technical Stack
 
