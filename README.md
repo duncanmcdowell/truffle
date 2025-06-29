@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Truffle 🐖
 
-## Getting Started
+Truffle is a job search and monitoring application that scrapes job boards from top VC companies in North America.
 
-First, run the development server:
+## Current Functionality
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The application provides:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Web Interface**: A modern Next.js 14+ frontend with a data table displaying scraped jobs, search functionality, and filtering options
+- **Real-time Job Scraping**: Manual and automated scraping of job boards from 15+ major VC firms including Sequoia, a16z, Accel, Bessemer, and others
+- **Search Term Management**: Ability to add, remove, and manage search terms that are used to filter job listings
+- **Seniority Filtering**: Configurable filters for job seniority levels (CXO, VP, Director, Senior, etc.)
+- **Scheduled Automation**: Optional hourly automated job scraping with real-time progress tracking
+- **Duplicate Detection**: SQLite database prevents duplicate job entries across scraping sessions
+- **Real-time Notifications**: Toast notifications for job search progress and completion
+- **Data Persistence**: SQLite database for storing jobs, search terms, and search settings
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technical Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Frontend**: Next.js 14+ with React 19, TypeScript, and Tailwind CSS
+- **Database**: SQLite with better-sqlite3
+- **UI Components**: Radix UI primitives with custom styling
+- **Data Validation**: Zod for type safety and validation
+- **Scheduling**: node-cron for automated hourly job searches
+- **Email**: Resend integration (configured but not actively used for alerts)
+- **Real-time Updates**: Server-Sent Events (SSE) for progress tracking
 
-## Learn More
+## Job Board Platforms Supported
 
-To learn more about Next.js, take a look at the following resources:
+The application supports two major job board platforms:
+- **Consider**: Used by firms like Sequoia, a16z, Bessemer, Kleiner Perkins, etc.
+- **Getro**: Used by firms like Accel, Insight Partners, Khosla Ventures, etc.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Each platform has its own API integration, parsing logic, and data transformation pipeline, making it easy to add new VC firms that use these platforms.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture Overview
 
-## Deploy on Vercel
+This project is designed to be scalable and easy to extend. The core components are:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **`helpers.ts`**: This is the central configuration file. The `VC_FIRMS` array defines every VC firm the project knows about, including its name, the job board platform it uses (e.g., 'consider', 'getro'), its `boardId`, `apiUrl`, and whether it's enabled for scraping.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **`job-boards/`**: This directory contains the "drivers" for different job board platforms. Each subdirectory (e.g., `consider/`, `getro/`) holds the specific logic for fetching, parsing, and inserting jobs from that platform. This makes the logic reusable for any VC firm that uses the same underlying job board software.
+
+- **`vc-firms/handlers.ts`**: This file dynamically generates a `FIRM_HANDLERS` object by mapping each firm in `VC_FIRMS` to the correct platform driver in the `job-boards` directory. This eliminates the need for conditional logic (if/else or switch statements) when processing different firms.
+
+- **`scheduler/index.ts`**: The main scheduler iterates through the enabled VC firms, uses the `FIRM_HANDLERS` to get the correct functions for each firm, and executes the scraping process.
+
+### How to Add a New VC Firm
+
+1.  **If the firm uses an existing platform (e.g., 'consider' or 'getro'):**
+    -   Simply add a new entry to the `VC_FIRMS` array in `helpers.ts` with the correct `name`, `platform`, `boardId`, and `apiUrl`.
+    -   Set `enabled: true` to have the scheduler pick it up automatically.
+
+2.  **If the firm uses a new job board platform:**
+    -   Create a new subdirectory in `job-boards/` for the new platform (e.g., `job-boards/new-platform/`).
+    -   Implement the necessary files inside (`api.ts`, `parser.ts`, `payload.ts`, `insert.ts`, etc.) based on the new platform's API.
+    -   Add the new platform driver to the `PLATFORM_DRIVERS` mapping in `vc-firms/handlers.ts`.
+    -   Add the new VC firm to the `VC_FIRMS` array in `helpers.ts`, specifying its new platform.

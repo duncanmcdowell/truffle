@@ -1,0 +1,36 @@
+name: Scheduled Job Search
+
+on:
+  schedule:
+    # Run every hour at minute 0
+    - cron: '0 * * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  job-search:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Trigger Job Search
+      run: |
+        curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+          -H "Content-Type: application/json" \
+          "${{ secrets.VERCEL_URL }}/api/cron"
+      
+    - name: Check Response
+      run: |
+        response=$(curl -s -X POST \
+          -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+          -H "Content-Type: application/json" \
+          "${{ secrets.VERCEL_URL }}/api/cron")
+        
+        echo "Response: $response"
+        
+        # Check if the response indicates success
+        if echo "$response" | grep -q '"success":true'; then
+          echo "✅ Job search completed successfully"
+        else
+          echo "❌ Job search failed or was disabled"
+          exit 1
+        fi 
